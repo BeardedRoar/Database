@@ -92,6 +92,8 @@ public class StudentPortal
             throws SQLException
     {
         // TODO: Your implementation here
+    	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
+    	st.executeQuery();
     }
 
     /* Unregister: Given a student id number and a course code, this function
@@ -100,6 +102,8 @@ public class StudentPortal
     static void unregisterStudent(Connection conn, String student, String course)
             throws SQLException
     {
-        // TODO: Your implementation here
+        // TODO: Your implementation here// TODO: Your implementation here
+    	PreparedStatement st = conn.prepareStatement("DELETE FROM Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
+    	st.executeQuery();    	
     }
 }
