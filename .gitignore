@@ -147,3 +147,7 @@ $RECYCLE.BIN/
 
 # Windows shortcuts
 *.lnk
+
+# Project specific
+*/pw.txt
+*/un.txt
