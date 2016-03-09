@@ -82,8 +82,8 @@ public class StudentPortal
      */
     static void getInformation(Connection conn, String student) throws SQLException
     {
-    	String eval;
         Statement st = conn.createStatement();
+        // Start by printing the students personal info
         System.out.println("Information for student " + student + "\n");
         ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
         
@@ -91,13 +91,14 @@ public class StudentPortal
         	System.out.println("Name: " + personalInfo.getString(4));
         	System.out.println("Student ID: " + personalInfo.getString(3));
         	System.out.println("Line: " + personalInfo.getString(5));
-        	eval = personalInfo.getString(6);
+        	String eval = personalInfo.getString(6);
         	if (eval != null) {
         		System.out.println("BranchName: " + eval);
         	}
         }
         personalInfo.close();
         
+        // Then print the read courses
         System.out.println("\nRead courses:");
         ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
         while(readCourses.next()){
@@ -106,6 +107,7 @@ public class StudentPortal
         }
         readCourses.close();
         
+        // The the courses the student is registred to
         // TODO: CourseName!
         System.out.println("\nRegistred courses:");
         ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
@@ -115,6 +117,7 @@ public class StudentPortal
         }
         registredCourses.close();
         
+        // Finally print how far the student has gotten to graduation
         ResultSet pathToGraduation = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
         if (pathToGraduation.next()) {
         	System.out.println("\nSeminar courses taken: " + pathToGraduation.getString(8));
