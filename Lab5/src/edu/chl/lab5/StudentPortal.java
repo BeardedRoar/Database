@@ -10,7 +10,6 @@ package edu.chl.lab5;
  */
 import java.sql.*; // JDBC stuff.
 import java.util.Properties;
-import java.util.Scanner;
 import java.io.*;  // Reading user input.
 
 public class StudentPortal
@@ -71,7 +70,7 @@ public class StudentPortal
         }
     }
 
-    /* Given a student identification number, ths function should print
+    /* Given a student identification number, this function should print
      * - the name of the student, the students national identification number
      *   and their issued login name (something similar to a CID)
      * - the programme and branch (if any) that the student is following.
@@ -84,35 +83,37 @@ public class StudentPortal
     {
         Statement st = conn.createStatement();
         // Start by printing the students personal info
-        System.out.println("Information for student " + student + "\n");
+        System.out.println("Information for student " + student + "\n-------------------------------------");
         ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
         
         if(personalInfo.next()){
         	System.out.println("Name: " + personalInfo.getString(4));
         	System.out.println("Student ID: " + personalInfo.getString(3));
         	System.out.println("Line: " + personalInfo.getString(5));
-        	String eval = personalInfo.getString(6);
-        	if (eval != null) {
-        		System.out.println("BranchName: " + eval);
+        	String branch = personalInfo.getString(6);
+        	if (branch != null) {
+        		System.out.println("Branch: " + branch);
+        	} else {
+        		System.out.println("Branch: None");
         	}
         }
         personalInfo.close();
         
         // Then print the read courses
-        System.out.println("\nRead courses:");
+        System.out.println("\nRead courses (name (code), credits: grade):");
         ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
         while(readCourses.next()){
-        	System.out.println(readCourses.getString(4) + " (" + readCourses.getString(3)+ "), "
+        	System.out.println(" " + readCourses.getString(4) + " (" + readCourses.getString(3)+ "), "
         			+ readCourses.getString(6) + "p: " + readCourses.getString(5));
         }
         readCourses.close();
         
         // The the courses the student is registred to
         // TODO: CourseName!
-        System.out.println("\nRegistred courses:");
+        System.out.println("\nRegistered courses (name (code): status):");
         ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
         while(registredCourses.next()){
-        	System.out.println(registredCourses.getString(3) + " (" + registredCourses.getString(3)+ "), "
+        	System.out.println(" " + registredCourses.getString(3) + " (" + registredCourses.getString(3)+ "): "
         			+ registredCourses.getString(4));
         }
         registredCourses.close();
@@ -139,10 +140,15 @@ public class StudentPortal
     static void registerStudent(Connection conn, String student, String course)
             throws SQLException
     {
-        // TODO: Your implementation here
     	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations VALUES('"+student+"', 'NULL', '"+course+"')");
-    	int response = st.executeUpdate();
-    	System.out.println("response to registration" + response);
+    	
+    	try {
+    		st.executeUpdate();
+        	System.out.println("Registration completed");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+    	
     	st.close();
     }
 
@@ -152,10 +158,15 @@ public class StudentPortal
     static void unregisterStudent(Connection conn, String student, String course)
             throws SQLException
     {
-        // TODO: Your implementation here// TODO: Your implementation here
     	PreparedStatement st = conn.prepareStatement("DELETE FROM Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
-    	int response = st.executeUpdate();
-    	System.out.println("response to unregistration" + response);
+    	
+    	try {
+    		st.executeUpdate();
+        	System.out.println("Unegistration completed");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+    	
     	st.close();
     }
 }
