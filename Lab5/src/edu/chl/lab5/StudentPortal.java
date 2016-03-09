@@ -41,7 +41,8 @@ public class StudentPortal
             props.setProperty("password",PASSWORD);
             Connection conn = DriverManager.getConnection(url, props);
 
-            String student = args[0]; // This is the identifier for the student.
+            //String student = args[0]; // This is the identifier for the student.
+            String student = "12345";
 
             Console console = System.console();
             usage();
@@ -82,7 +83,15 @@ public class StudentPortal
      */
     static void getInformation(Connection conn, String student) throws SQLException
     {
-        // TODO: Your implementation here
+        Statement st = conn.createStatement();
+        ResultSet rs = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
+        while (rs.next()) {
+        	for (int i = 1; i <= 6; i++){
+        		System.out.println(rs.getString(i));
+        	}
+        }
+        rs.close();
+        st.close();
     }
 
     /* Register: Given a student id number and a course code, this function
