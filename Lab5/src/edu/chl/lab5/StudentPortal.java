@@ -141,7 +141,9 @@ public class StudentPortal
     {
         // TODO: Your implementation here
     	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations VALUES('"+student+"', 'NULL', '"+course+"')");
-    	st.executeQuery();
+    	int response = st.executeUpdate();
+    	System.out.println("response to registration" + response);
+    	st.close();
     }
 
     /* Unregister: Given a student id number and a course code, this function
@@ -152,6 +154,8 @@ public class StudentPortal
     {
         // TODO: Your implementation here// TODO: Your implementation here
     	PreparedStatement st = conn.prepareStatement("DELETE FROM Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
-    	st.executeQuery();    	
+    	int response = st.executeUpdate();
+    	System.out.println("response to unregistration" + response);
+    	st.close();
     }
 }
