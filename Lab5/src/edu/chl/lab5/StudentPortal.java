@@ -97,6 +97,25 @@ public class StudentPortal
         		System.out.println("BranchName: " + eval);
         	}
         }
+        personalInfo.close();
+        
+        System.out.println("\nRead courses:");
+        ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
+        while(readCourses.next()){
+        	System.out.println(readCourses.getString(4) + " (" + readCourses.getString(3)+ "), "
+        			+ readCourses.getString(6) + "p: " + readCourses.getString(5));
+        }
+        readCourses.close();
+        
+        // TODO: CourseName!
+        System.out.println("\nRegistred courses:");
+        ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
+        while(registredCourses.next()){
+        	System.out.println(registredCourses.getString(3) + " (" + registredCourses.getString(3)+ "), "
+        			+ registredCourses.getString(4));
+        }
+        registredCourses.close();
+        
         ResultSet rs = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
         while (rs.next()) {
         	System.out.println("Name: " + rs.getString(2));
