@@ -41,8 +41,7 @@ public class StudentPortal
             props.setProperty("password",PASSWORD);
             Connection conn = DriverManager.getConnection(url, props);
 
-            //String student = args[0]; // This is the identifier for the student.
-            String student = "12345";
+            String student = args[0]; // This is the identifier for the student.
 
             Console console = System.console();
             usage();
@@ -116,17 +115,19 @@ public class StudentPortal
         }
         registredCourses.close();
         
-        ResultSet rs = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
-        while (rs.next()) {
-        	System.out.println("Name: " + rs.getString(2));
-        	System.out.println("Student ID: " + rs.getString(1));
-        	System.out.println("Name: " + rs.getString(1));
-        	for (int i = 1; i <= 6; i++){
-        		System.out.println(rs.getString(i));
-        	}
+        ResultSet pathToGraduation = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
+        if (pathToGraduation.next()) {
+        	System.out.println("\nSeminar courses taken: " + pathToGraduation.getString(8));
+        	System.out.println("Math credits taken: " + pathToGraduation.getString(6));
+        	System.out.println("Research credits taken: " + pathToGraduation.getString(7));
+        	System.out.println("Recomended credits taken: " + pathToGraduation.getString(4));
+        	System.out.println("Total credits taken: " + pathToGraduation.getString(3));
+        	System.out.println("Mandatory credits needed for graduation: " + pathToGraduation.getString(5));
+        	System.out.println("Fulfills the requirements for graduation: " + pathToGraduation.getString(9));
         }
-        rs.close();
+        pathToGraduation.close();
         st.close();
+        System.out.println("\n");
     }
 
     /* Register: Given a student id number and a course code, this function
