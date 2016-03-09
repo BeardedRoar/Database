@@ -137,7 +137,7 @@ public class StudentPortal
             throws SQLException
     {
         // TODO: Your implementation here
-    	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
+    	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations VALUES('"+student+"', 'NULL', '"+course+"')");
     	st.executeQuery();
     }
 
