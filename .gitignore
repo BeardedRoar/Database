@@ -62,6 +62,8 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 
+*.iml
+*/.idea
 
 ### Eclipse ###
 
