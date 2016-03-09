@@ -83,9 +83,25 @@ public class StudentPortal
      */
     static void getInformation(Connection conn, String student) throws SQLException
     {
+    	String eval;
         Statement st = conn.createStatement();
-        ResultSet rs = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
+        System.out.println("Information for student " + student + "\n");
+        ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
+        
+        if(personalInfo.next()){
+        	System.out.println("Name: " + personalInfo.getString(4));
+        	System.out.println("Student ID: " + personalInfo.getString(3));
+        	System.out.println("Line: " + personalInfo.getString(5));
+        	eval = personalInfo.getString(6);
+        	if (eval != null) {
+        		System.out.println("BranchName: " + eval);
+        	}
+        }
+        ResultSet rs = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
         while (rs.next()) {
+        	System.out.println("Name: " + rs.getString(2));
+        	System.out.println("Student ID: " + rs.getString(1));
+        	System.out.println("Name: " + rs.getString(1));
         	for (int i = 1; i <= 6; i++){
         		System.out.println(rs.getString(i));
         	}
