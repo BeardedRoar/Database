@@ -151,5 +151,4 @@ $RECYCLE.BIN/
 *.lnk
 
 # Project specific
-pw.txt
-un.txt
+UserInfo.java
