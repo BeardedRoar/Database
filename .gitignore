@@ -151,5 +151,5 @@ $RECYCLE.BIN/
 *.lnk
 
 # Project specific
-*/pw.txt
-*/un.txt
+pw.txt
+un.txt
