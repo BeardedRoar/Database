@@ -82,10 +82,12 @@ public class StudentPortal
     static void getInformation(Connection conn, String student) throws SQLException
     {
         Statement st = conn.createStatement();
+        
+        
         // Start by printing the students personal info
         System.out.println("Information for student " + student + "\n-------------------------------------");
-        ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
         
+        ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
         if(personalInfo.next()){
         	System.out.println("Name: " + personalInfo.getString(4));
         	System.out.println("Student ID: " + personalInfo.getString(3));
@@ -99,8 +101,10 @@ public class StudentPortal
         }
         personalInfo.close();
         
+        
         // Then print the read courses
         System.out.println("\nRead courses (name (code), credits: grade):");
+        
         ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
         while(readCourses.next()){
         	System.out.println(" " + readCourses.getString(4) + " (" + readCourses.getString(3)+ "), "
@@ -108,15 +112,28 @@ public class StudentPortal
         }
         readCourses.close();
         
-        // The the courses the student is registred to
-        // TODO: CourseName!
+        
+        // The the courses the student is registered to
         System.out.println("\nRegistered courses (name (code): status):");
+        
         ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
+        Statement st2 = conn.createStatement();//We need a separate statement to have 2 different ResultSet open
         while(registredCourses.next()){
-        	System.out.println(" " + registredCourses.getString(3) + " (" + registredCourses.getString(3)+ "): "
-        			+ registredCourses.getString(4));
+        	String queuStatus = registredCourses.getString(4);
+        	String courseID = registredCourses.getString(3);
+        	String courseName = "";
+        	
+        	ResultSet course = st2.executeQuery("SELECT * FROM Course WHERE ID='" + courseID + "'");
+        	if (course.next()) {
+        		courseName=course.getString(2);
+        	}
+        	course.close();
+        	
+        	System.out.println(" " + courseName + " (" + courseID + "): " + queuStatus);
         }
+        st2.close();
         registredCourses.close();
+        
         
         // Finally print how far the student has gotten to graduation
         ResultSet pathToGraduation = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
@@ -130,8 +147,9 @@ public class StudentPortal
         	System.out.println("Fulfills the requirements for graduation: " + pathToGraduation.getString(9));
         }
         pathToGraduation.close();
+        
+        
         st.close();
-        System.out.println("\n");
     }
 
     /* Register: Given a student id number and a course code, this function
