@@ -102,7 +102,7 @@ public class StudentPortal
         personalInfo.close();
         
         
-        // Then print the read courses
+        // Then print the read course(s)
         System.out.println("\nRead courses (name (code), credits: grade):");
         
         ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
@@ -113,7 +113,7 @@ public class StudentPortal
         readCourses.close();
         
         
-        // The the courses the student is registered to
+        // The print the course(s) the student is registered to
         System.out.println("\nRegistered courses (name (code): status):");
         
         ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
@@ -135,7 +135,7 @@ public class StudentPortal
         registredCourses.close();
         
         
-        // Finally print how far the student has gotten to graduation
+        // Finally print how close the student is to graduation
         ResultSet pathToGraduation = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
         if (pathToGraduation.next()) {
         	System.out.println("\nSeminar courses taken: " + pathToGraduation.getString(8));
@@ -148,7 +148,7 @@ public class StudentPortal
         }
         pathToGraduation.close();
         
-        
+        System.out.println("-------------------------------------");
         st.close();
     }
 
