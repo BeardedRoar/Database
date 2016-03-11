@@ -158,7 +158,9 @@ public class StudentPortal
     static void registerStudent(Connection conn, String student, String course)
             throws SQLException
     {
-    	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations VALUES('"+student+"', 'NULL', '"+course+"')");
+    	PreparedStatement st = conn.prepareStatement("INSERT INTO Registrations VALUES(? , 'NULL', ?)");
+    	st.setString(1, student);
+    	st.setString(2, course);
     	
     	try {
     		st.executeUpdate();
@@ -176,7 +178,9 @@ public class StudentPortal
     static void unregisterStudent(Connection conn, String student, String course)
             throws SQLException
     {
-    	PreparedStatement st = conn.prepareStatement("DELETE FROM Registrations WHERE nationalIDNbr='"+student+"' AND courseID='"+course+"'");
+    	PreparedStatement st = conn.prepareStatement("DELETE FROM Registrations WHERE nationalIDNbr=? AND courseID=?");
+    	st.setString(1, student);
+    	st.setString(2, course);
     	
     	try {
     		st.executeUpdate();
