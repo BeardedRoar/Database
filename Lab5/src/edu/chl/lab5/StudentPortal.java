@@ -81,13 +81,13 @@ public class StudentPortal
      */
     static void getInformation(Connection conn, String student) throws SQLException
     {
-        Statement st = conn.createStatement();
-        
-        
+    	PreparedStatement st;
+    	
+    	
         // Start by printing the students personal info
         System.out.println("Information for student " + student + "\n-------------------------------------");
-        
-        ResultSet personalInfo = st.executeQuery("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
+        st = prepareStudentStatement(conn, "StudentsFollowing", student);
+        ResultSet personalInfo = st.executeQuery();//("SELECT * FROM StudentsFollowing WHERE NationalIDNbr='" + student + "'");
         if(personalInfo.next()){
         	System.out.println("Name: " + personalInfo.getString(4));
         	System.out.println("Student ID: " + personalInfo.getString(3));
@@ -100,43 +100,51 @@ public class StudentPortal
         	}
         }
         personalInfo.close();
+        st.close();
         
         
         // Then print the read course(s)
         System.out.println("\nRead courses (name (code), credits: grade):");
-        
-        ResultSet readCourses = st.executeQuery("SELECT * FROM FinishedCourses WHERE NationalIDNbr='" + student + "'");
+        st = prepareStudentStatement(conn, "FinishedCourses", student);
+        ResultSet readCourses = st.executeQuery();
         while(readCourses.next()){
         	System.out.println(" " + readCourses.getString(4) + " (" + readCourses.getString(3)+ "), "
         			+ readCourses.getString(6) + "p: " + readCourses.getString(5));
         }
         readCourses.close();
+        st.close();
         
         
         // The print the course(s) the student is registered to
         System.out.println("\nRegistered courses (name (code): status):");
+        st = prepareStudentStatement(conn, "Registrations", student);
         
-        ResultSet registredCourses = st.executeQuery("SELECT * FROM Registrations WHERE NationalIDNbr='" + student + "'");
-        Statement st2 = conn.createStatement();//We need a separate statement to have 2 different ResultSet open
-        while(registredCourses.next()){
+        ResultSet registredCourses = st.executeQuery();
+        PreparedStatement st2;//We need a separate statement to have 2 different ResultSet open
+        while(registredCourses.next()){        	
         	String queuStatus = registredCourses.getString(4);
         	String courseID = registredCourses.getString(3);
         	String courseName = "";
+        	st2 = conn.prepareStatement("SELECT * FROM Course WHERE ID=?");
+        	st2.setString(1, courseID);
         	
-        	ResultSet course = st2.executeQuery("SELECT * FROM Course WHERE ID='" + courseID + "'");
+        	ResultSet course = st2.executeQuery();
         	if (course.next()) {
         		courseName=course.getString(2);
         	}
         	course.close();
         	
         	System.out.println(" " + courseName + " (" + courseID + "): " + queuStatus);
+        	
+        	st2.close();
         }
-        st2.close();
         registredCourses.close();
+        st.close();
         
         
         // Finally print how close the student is to graduation
-        ResultSet pathToGraduation = st.executeQuery("SELECT * FROM PathToGraduation WHERE NationalIDNbr='" + student + "'");
+        st = prepareStudentStatement(conn, "PathToGraduation", student);
+        ResultSet pathToGraduation = st.executeQuery();
         if (pathToGraduation.next()) {
         	System.out.println("\nSeminar courses taken: " + pathToGraduation.getString(8));
         	System.out.println("Math credits taken: " + pathToGraduation.getString(6));
@@ -147,9 +155,9 @@ public class StudentPortal
         	System.out.println("Fulfills the requirements for graduation: " + pathToGraduation.getString(9));
         }
         pathToGraduation.close();
+        st.close();
         
         System.out.println("-------------------------------------");
-        st.close();
     }
 
     /* Register: Given a student id number and a course code, this function
@@ -190,5 +198,12 @@ public class StudentPortal
 		}
     	
     	st.close();
+    }
+    
+    private static PreparedStatement prepareStudentStatement(Connection conn, String table, String student) throws SQLException{
+        PreparedStatement st = conn.prepareStatement("SELECT * FROM " + table + " WHERE NationalIDNbr=?");
+        st.setString(1, student);
+        
+        return st;    	
     }
 }
